@@ -1,0 +1,40 @@
+from itertools import permutations
+
+def solve_tsp_brute_force(distance_matrix, start_city=0):
+    num_cities = len(distance_matrix)
+    # Create a list of all cities except the starting city
+    other_cities = [i for i in range(num_cities) if i != start_city]
+    
+    shortest_path = None
+    min_distance = float('inf')
+    
+    # Check every possible ordering of the remaining cities
+    for perm in permutations(other_cities):
+        current_path = [start_city] + list(perm) + [start_city]
+        current_distance = 0
+        
+        # Sum the distances along this route
+        for i in range(len(current_path) - 1):
+            from_city = current_path[i]
+            to_city = current_path[i + 1]
+            current_distance += distance_matrix[from_city][to_city]
+            
+        # Update best route if a shorter one is found
+        if current_distance < min_distance:
+            min_distance = current_distance
+            shortest_path = current_path
+            
+    return shortest_path, min_distance
+
+# Example usage: 4 cities represented as a symmetric distance matrix
+# distance_matrix[i][j] is the distance from city i to city j
+distances = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+path, cost = solve_tsp_brute_force(distances, start_city=0)
+print(f"Optimal Path: {path}")
+print(f"Minimum Cost: {cost}")
